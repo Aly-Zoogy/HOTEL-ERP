@@ -1,7 +1,11 @@
-.DS_Store
 *.pyc
-*.egg-info
+__pycache__/
+.DS_Store
 *.swp
-tags
-hotel_management/docs/current
+*.log
 node_modules/
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/
