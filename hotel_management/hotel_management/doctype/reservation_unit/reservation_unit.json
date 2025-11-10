@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "creation": "2025-11-07 14:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "unit",
+  "rate_per_night",
+  "check_in",
+  "check_out",
+  "qty_nights",
+  "linked_guest",
+  "total_amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Unit",
+   "options": "Property Unit",
+   "reqd": 1
+  },
+  {
+   "fieldname": "rate_per_night",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate per Night"
+  },
+  {
+   "fieldname": "check_in",
+   "fieldtype": "Date",
+   "label": "Check In"
+  },
+  {
+   "fieldname": "check_out",
+   "fieldtype": "Date",
+   "label": "Check Out"
+  },
+  {
+   "fieldname": "qty_nights",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Nights",
+   "read_only": 1
+  },
+  {
+   "fieldname": "linked_guest",
+   "fieldtype": "Link",
+   "label": "Linked Guest",
+   "options": "Guest"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-07 14:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hotel Management",
+ "name": "Reservation Unit",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
