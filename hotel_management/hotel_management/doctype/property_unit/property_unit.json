@@ -42,11 +42,11 @@
   },
   {
    "fieldname": "unit_type",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Unit Type",
-   "options": "Room\nApartment\nChalet\nVilla",
+   "options": "Unit Type",
    "reqd": 1
   },
   {

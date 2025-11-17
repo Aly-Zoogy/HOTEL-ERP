@@ -18,9 +18,6 @@ class PropertyUnit(Document):
 		"""Ensure unit_id is provided"""
 		if not self.unit_id:
 			frappe.throw(_("Unit ID is required"))
-		
-		# Optional: Enforce format like PROPERTY-FLOOR-NUMBER
-		# You can add more strict validation here if needed
 	
 	def validate_rate(self):
 		"""Ensure rate is positive"""
@@ -40,3 +37,69 @@ class PropertyUnit(Document):
 			account_type = frappe.db.get_value("Account", self.expense_account, "account_type")
 			if account_type != "Expense Account":
 				frappe.throw(_("Expense Account must be an Expense Account type"))
+
+@frappe.whitelist()
+def get_unit_reservations(unit_name):
+	"""Get all reservations for this unit"""
+	reservations = frappe.db.sql("""
+		SELECT DISTINCT 
+			r.name,
+			r.customer,
+			r.primary_guest,
+			r.check_in,
+			r.check_out,
+			r.status,
+			r.total_amount
+		FROM `tabReservation` r
+		JOIN `tabReservation Unit` ru ON ru.parent = r.name
+		WHERE ru.unit = %s
+		AND r.docstatus IN (0, 1)
+		ORDER BY r.check_in DESC
+		LIMIT 100
+	""", (unit_name,), as_dict=1)
+	
+	return reservations
+
+@frappe.whitelist()
+def get_unit_stats(unit_name):
+	"""Get statistics for this unit"""
+	from frappe.utils import getdate, today, add_months
+	
+	# Total reservations
+	total_reservations = frappe.db.sql("""
+		SELECT COUNT(DISTINCT r.name) as count
+		FROM `tabReservation` r
+		JOIN `tabReservation Unit` ru ON ru.parent = r.name
+		WHERE ru.unit = %s
+		AND r.docstatus = 1
+	""", (unit_name,), as_dict=1)[0].count or 0
+	
+	# Total revenue
+	total_revenue = frappe.db.sql("""
+		SELECT SUM(ru.total_amount) as revenue
+		FROM `tabReservation Unit` ru
+		JOIN `tabReservation` r ON r.name = ru.parent
+		WHERE ru.unit = %s
+		AND r.docstatus = 1
+	""", (unit_name,), as_dict=1)[0].revenue or 0
+	
+	# Current month occupancy
+	current_month_start = getdate(today()).replace(day=1)
+	next_month_start = add_months(current_month_start, 1)
+	
+	occupied_nights = frappe.db.sql("""
+		SELECT SUM(ru.qty_nights) as nights
+		FROM `tabReservation Unit` ru
+		JOIN `tabReservation` r ON r.name = ru.parent
+		WHERE ru.unit = %s
+		AND r.docstatus = 1
+		AND r.status IN ('Confirmed', 'Checked-In', 'Checked-Out')
+		AND ru.check_in >= %s
+		AND ru.check_in < %s
+	""", (unit_name, current_month_start, next_month_start), as_dict=1)[0].nights or 0
+	
+	return {
+		"total_reservations": total_reservations,
+		"total_revenue": total_revenue,
+		"occupied_nights_this_month": occupied_nights
+	}
