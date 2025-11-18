@@ -1,0 +1,183 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:rate_plan_name",
+ "creation": "2025-11-16 03:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rate_plan_name",
+  "property",
+  "unit_type",
+  "column_break_1",
+  "valid_from",
+  "valid_to",
+  "is_active",
+  "section_break_rates",
+  "base_rate",
+  "weekend_rate",
+  "seasonal_markup_percent",
+  "column_break_2",
+  "minimum_stay_nights",
+  "apply_on_weekends_only",
+  "priority",
+  "section_break_description",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "rate_plan_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Rate Plan Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "property",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Property",
+   "options": "Property",
+   "reqd": 1
+  },
+  {
+   "fieldname": "unit_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Unit Type",
+   "options": "Unit Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "valid_to",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid To",
+   "reqd": 1
+  },
+  {
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Is Active",
+   "default": 1
+  },
+  {
+   "fieldname": "section_break_rates",
+   "fieldtype": "Section Break",
+   "label": "Rate Details"
+  },
+  {
+   "fieldname": "base_rate",
+   "fieldtype": "Currency",
+   "label": "Base Rate per Night",
+   "reqd": 1,
+   "description": "Standard rate for weekdays"
+  },
+  {
+   "fieldname": "weekend_rate",
+   "fieldtype": "Currency",
+   "label": "Weekend Rate per Night",
+   "description": "Special rate for Friday & Saturday (optional)"
+  },
+  {
+   "fieldname": "seasonal_markup_percent",
+   "fieldtype": "Float",
+   "label": "Seasonal Markup %",
+   "precision": 2,
+   "description": "Additional percentage markup (e.g., 20% for high season)"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "minimum_stay_nights",
+   "fieldtype": "Int",
+   "label": "Minimum Stay (Nights)",
+   "default": 1,
+   "description": "Minimum nights required for this rate plan"
+  },
+  {
+   "fieldname": "apply_on_weekends_only",
+   "fieldtype": "Check",
+   "label": "Apply on Weekends Only",
+   "description": "If checked, this plan applies only to Friday/Saturday"
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "label": "Priority",
+   "default": 1,
+   "description": "Higher number = higher priority (when multiple plans overlap)"
+  },
+  {
+   "fieldname": "section_break_description",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text Editor",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-11-16 03:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hotel Management",
+ "name": "Rate Plan",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Hotel Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Front Desk"
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
