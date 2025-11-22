@@ -1,0 +1,66 @@
+{
+ "actions": [],
+ "creation": "2025-11-18 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "reservation",
+  "property_unit",
+  "check_in",
+  "check_out",
+  "nights",
+  "amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "reservation",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reservation",
+   "options": "Reservation"
+  },
+  {
+   "fieldname": "property_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Property Unit",
+   "options": "Property Unit"
+  },
+  {
+   "fieldname": "check_in",
+   "fieldtype": "Date",
+   "label": "Check In"
+  },
+  {
+   "fieldname": "check_out",
+   "fieldtype": "Date",
+   "label": "Check Out"
+  },
+  {
+   "fieldname": "nights",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Nights"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-18 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hotel Management",
+ "name": "Owner Settlement Revenue Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

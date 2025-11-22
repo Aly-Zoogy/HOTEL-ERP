@@ -175,7 +175,8 @@ class Reservation(Document):
 				"item_code": item_code,
 				"description": f"Stay at {unit.unit} ({unit.check_in} to {unit.check_out})",
 				"qty": unit.qty_nights,
-				"rate": unit.rate_per_night
+				"rate": unit.rate_per_night,
+				"property_unit": unit.unit
 			})
 		
 		# Add services
@@ -185,7 +186,8 @@ class Reservation(Document):
 					"item_code": service.service_item,
 					"description": service.description,
 					"qty": service.qty,
-					"rate": service.rate
+					"rate": service.rate,
+					"property_unit": service.get("linked_unit")
 				})
 				service.posted_to_invoice = 1
 		

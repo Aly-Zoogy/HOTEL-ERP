@@ -1,0 +1,85 @@
+{
+ "actions": [],
+ "creation": "2025-11-18 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+   "field_order": [
+  "expense_type",
+  "reference_doctype",
+  "reference_name",
+  "property_unit",
+  "expense_date",
+  "amount",
+  "paid_by",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "expense_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Expense Type",
+   "options": "Maintenance\nCleaning\nUtilities\nSupplies\nOther"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "label": "Reference DocType",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Reference Document",
+   "options": "reference_doctype",
+   "read_only": 1
+  },
+  {
+   "fieldname": "property_unit",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Property Unit",
+   "options": "Property Unit"
+  },
+  {
+   "fieldname": "expense_date",
+   "fieldtype": "Date",
+   "label": "Expense Date"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount"
+  },
+  {
+   "fieldname": "paid_by",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Paid By",
+   "options": "Owner\nManagement",
+   "read_only": 1,
+   "description": "Who pays this expense"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-11-18 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hotel Management",
+ "name": "Owner Settlement Expense Item",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
