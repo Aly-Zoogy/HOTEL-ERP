@@ -28,8 +28,16 @@ doc_events = {
 
 # Scheduled Tasks - Run periodic jobs
 scheduler_events = {
-	"monthly": [
-		"hotel_management.hotel_management.doctype.owner_settlement.owner_settlement.auto_generate_monthly_settlements"
+	# Run on 1st day of every month at 3 AM
+	"cron": {
+		"0 3 1 * *": [
+			"hotel_management.hotel_management.doctype.owner_settlement.owner_settlement.auto_generate_monthly_settlements"
+		]
+	},
+	
+	# Alternative: Run daily check (more flexible)
+	"daily": [
+		"hotel_management.hotel_management.doctype.owner_settlement.owner_settlement.check_and_generate_settlements"
 	]
 }
 

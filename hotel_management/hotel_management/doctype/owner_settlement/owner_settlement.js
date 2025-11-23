@@ -42,9 +42,6 @@ frappe.ui.form.on('Owner Settlement', {
 		}
 		
 		// Custom buttons based on status
-		// Note: Calculate happens automatically on Save (in validate method)
-		// No need for Calculate button
-		
 		if (frm.doc.docstatus === 1) {
 			// Submitted status
 			
@@ -52,40 +49,58 @@ frappe.ui.form.on('Owner Settlement', {
 				// Add Post to Accounting button
 				frm.add_custom_button(__('Post to Accounting'), function() {
 					post_to_accounting(frm);
-				}).addClass('btn-primary');
+				}, __('Actions')).addClass('btn-primary');
 			}
 			
 			if (frm.doc.status === "Posted" && !frm.doc.linked_payment_entry) {
 				// Add Create Payment button
-				frm.add_custom_button(__('Create Payment'), function() {
-					create_payment_entry(frm);
-				}).addClass('btn-primary');
+				if (frm.doc.net_payable > 0) {
+					frm.add_custom_button(__('Create Payment'), function() {
+						create_payment_entry(frm);
+					}, __('Actions')).addClass('btn-primary');
+				} else {
+					frm.add_custom_button(__('Net Payable is Negative'), function() {
+						frappe.msgprint({
+							title: __('Cannot Create Payment'),
+							message: __('Net Payable is negative or zero. Owner owes company. No payment needed.'),
+							indicator: 'orange'
+						});
+					}, __('Actions')).addClass('btn-default');
+				}
 			}
 			
 			// Preview Settlement Report
-			frm.add_custom_button(__('Preview Settlement Report'), function() {
+			frm.add_custom_button(__('Preview Report'), function() {
 				preview_settlement_report(frm);
-			});
+			}, __('Reports'));
+			
+			// Print Settlement
+			frm.add_custom_button(__('Print Settlement'), function() {
+				frappe.route_options = {
+					"doc": frm.doc
+				};
+				frappe.set_route('print', frm.doctype, frm.doc.name);
+			}, __('Reports'));
 		}
 		
 		// View linked documents
 		if (frm.doc.linked_journal_entry) {
 			frm.add_custom_button(__('View Journal Entry'), function() {
 				frappe.set_route('Form', 'Journal Entry', frm.doc.linked_journal_entry);
-			});
+			}, __('View'));
 		}
 		
 		if (frm.doc.linked_payment_entry) {
 			frm.add_custom_button(__('View Payment'), function() {
 				frappe.set_route('Form', 'Payment Entry', frm.doc.linked_payment_entry);
-			});
+			}, __('View'));
 		}
 		
 		// View owner
 		if (frm.doc.property_owner) {
 			frm.add_custom_button(__('View Owner'), function() {
 				frappe.set_route('Form', 'Owner', frm.doc.property_owner);
-			});
+			}, __('View'));
 		}
 	},
 	
@@ -117,44 +132,9 @@ frappe.ui.form.on('Owner Settlement', {
 	}
 });
 
-function calculate_settlement(frm) {
-	if (!frm.doc.property_owner) {
-		frappe.msgprint(__('Please select an Owner first'));
-		return;
-	}
-	
-	if (!frm.doc.period_start || !frm.doc.period_end) {
-		frappe.msgprint(__('Please select Period Start and Period End'));
-		return;
-	}
-	
-	// ✅ CORRECT: Use frappe.call without doc and method
-	frappe.call({
-		method: 'hotel_management.hotel_management.doctype.owner_settlement.owner_settlement.calculate_and_save_settlement',
-		args: {
-			settlement_name: frm.doc.name,
-			property_owner: frm.doc.property_owner,
-			property_unit: frm.doc.property_unit,
-			period_start: frm.doc.period_start,
-			period_end: frm.doc.period_end
-		},
-		freeze: true,
-		freeze_message: __('Calculating settlement...'),
-		callback: function(r) {
-			if (r.message && r.message.success) {
-				frappe.show_alert({
-					message: __('Settlement calculated successfully'),
-					indicator: 'green'
-				}, 3);
-				frm.reload_doc();
-			}
-		}
-	});
-}
-
 function post_to_accounting(frm) {
 	frappe.confirm(
-		__('This will create a Journal Entry to post the settlement. Continue?'),
+		__('This will create a Journal Entry to post the settlement to accounting. Continue?'),
 		function() {
 			frappe.call({
 				doc: frm.doc,
@@ -168,7 +148,20 @@ function post_to_accounting(frm) {
 							indicator: 'green'
 						}, 5);
 						frm.reload_doc();
+					} else {
+						frappe.msgprint({
+							title: __('Post Failed'),
+							message: r.message ? r.message.message : __('Unknown error occurred'),
+							indicator: 'red'
+						});
 					}
+				},
+				error: function(r) {
+					frappe.msgprint({
+						title: __('Error'),
+						message: __('Failed to post to accounting. Please check error log.'),
+						indicator: 'red'
+					});
 				}
 			});
 		}
@@ -176,33 +169,39 @@ function post_to_accounting(frm) {
 }
 
 function create_payment_entry(frm) {
-	if (!frm.doc.property_owner) {
-		frappe.msgprint(__('Owner is required'));
-		return;
-	}
-	
-	// Get owner's supplier
-	frappe.db.get_value('Owner', frm.doc.property_owner, 'supplier', function(r) {
-		if (!r || !r.supplier) {
-			frappe.msgprint(__('Owner must have a linked Supplier'));
-			return;
+	frappe.confirm(
+		__('This will create a Payment Entry to pay the owner. Continue?'),
+		function() {
+			frappe.call({
+				doc: frm.doc,
+				method: 'create_payment_entry_from_settlement',
+				freeze: true,
+				freeze_message: __('Creating payment entry...'),
+				callback: function(r) {
+					if (r.message && r.message.success) {
+						frappe.show_alert({
+							message: __('Payment Entry created: {0}', [r.message.payment_entry]),
+							indicator: 'green'
+						}, 5);
+						frm.reload_doc();
+					} else {
+						frappe.msgprint({
+							title: __('Payment Creation Failed'),
+							message: r.message ? r.message.message : __('Unknown error occurred'),
+							indicator: 'red'
+						});
+					}
+				},
+				error: function(r) {
+					frappe.msgprint({
+						title: __('Error'),
+						message: __('Failed to create payment. Please check error log.'),
+						indicator: 'red'
+					});
+				}
+			});
 		}
-		
-		// Create Payment Entry
-		frappe.model.with_doctype('Payment Entry', function() {
-			let pe = frappe.model.get_new_doc('Payment Entry');
-			pe.payment_type = 'Pay';
-			pe.party_type = 'Supplier';
-			pe.party = r.supplier;
-			pe.paid_amount = Math.abs(frm.doc.net_payable);
-			pe.received_amount = 0;
-			pe.reference_no = frm.doc.name;
-			pe.reference_date = frappe.datetime.get_today();
-			pe.remarks = `Payment for Owner Settlement: ${frm.doc.name}`;
-			
-			frappe.set_route('Form', 'Payment Entry', pe.name);
-		});
-	});
+	);
 }
 
 function preview_settlement_report(frm) {
@@ -257,7 +256,7 @@ function preview_settlement_report(frm) {
 		frm.doc.revenue_details.forEach(function(row) {
 			html += `
 				<tr>
-					<td>${row.reservation}</td>
+					<td><a href="/app/reservation/${row.reservation}" target="_blank">${row.reservation}</a></td>
 					<td>${row.property_unit}</td>
 					<td>${frappe.datetime.str_to_user(row.check_in)}</td>
 					<td>${frappe.datetime.str_to_user(row.check_out)}</td>
@@ -282,6 +281,7 @@ function preview_settlement_report(frm) {
 						<th>${__('Unit')}</th>
 						<th>${__('Date')}</th>
 						<th>${__('Description')}</th>
+						<th>${__('Paid By')}</th>
 						<th>${__('Amount')}</th>
 					</tr>
 				</thead>
@@ -296,17 +296,21 @@ function preview_settlement_report(frm) {
 					<td>${row.property_unit}</td>
 					<td>${frappe.datetime.str_to_user(row.expense_date)}</td>
 					<td>${row.description || ''}</td>
+					<td><span class="indicator ${row.paid_by === 'Owner' ? 'red' : 'blue'}">${row.paid_by}</span></td>
 					<td>${format_currency(row.amount)}</td>
 				</tr>
 			`;
 		});
 	} else {
-		html += `<tr><td colspan="5" class="text-center">${__('No expense data')}</td></tr>`;
+		html += `<tr><td colspan="6" class="text-center">${__('No expense data')}</td></tr>`;
 	}
 	
 	html += `
 				</tbody>
 			</table>
+			
+			<h4 style="margin-top: 30px;">${__('Calculation Notes')}</h4>
+			<pre style="background: #f8f9fa; padding: 15px; border-radius: 5px; font-size: 12px;">${frm.doc.calculation_notes || 'No calculation notes'}</pre>
 		</div>
 	`;
 	
