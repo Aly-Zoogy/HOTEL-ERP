@@ -103,3 +103,29 @@ def get_unit_stats(unit_name):
 		"total_revenue": total_revenue,
 		"occupied_nights_this_month": occupied_nights
 	}
+# في نهاية property_unit.py أضف:
+
+@frappe.whitelist()
+def get_filtered_unit_types(doctype, txt, searchfield, start, page_len, filters):
+    """Filter unit types based on property type"""
+    
+    property_name = filters.get("property")
+    
+    if not property_name:
+        return []
+    
+    # Get property_type from Property
+    property_type = frappe.db.get_value("Property", property_name, "property_type")
+    
+    if not property_type:
+        return []
+    
+    # Get matching unit types
+    return frappe.db.sql("""
+        SELECT name, unit_type_name
+        FROM `tabUnit Type`
+        WHERE property_type = %s
+        AND is_active = 1
+        AND (name LIKE %s OR unit_type_name LIKE %s)
+        LIMIT %s, %s
+    """, (property_type, f"%{txt}%", f"%{txt}%", start, page_len))	
