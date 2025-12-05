@@ -59,3 +59,8 @@ after_install = "hotel_management.install.after_install"
 # jinja = {
 # 	"methods": "hotel_management.utils.jinja_methods"
 # }
+# App JS
+# ------
+app_include_js = [
+    "/assets/hotel_management/js/dashboard_widgets.js"
+]
