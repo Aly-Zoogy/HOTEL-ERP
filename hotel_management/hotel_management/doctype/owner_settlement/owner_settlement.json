@@ -1,7 +1,7 @@
 {
   "actions": [],
   "allow_rename": 1,
-  "autoname": "format:SET-{owner}-{YYYY}-{MM}",
+  "autoname": "format:SET-{property_owner}-{YYYY}-{MM}",
   "doctype": "DocType",
   "editable_grid": 1,
   "engine": "InnoDB",

@@ -1,0 +1,35 @@
+<div class="hotel-calendar-wrapper" style="padding: 10px;">
+    <div class="calendar-controls"
+        style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="view-modes btn-group">
+            <button class="btn btn-default btn-xs" data-view="Day">Day</button>
+            <button class="btn btn-default btn-xs" data-view="Week">Week</button>
+            <button class="btn btn-default btn-xs" data-view="Month">Month</button>
+        </div>
+        <div class="calendar-legend">
+            <span class="indicator-pill"
+                style="background: #2ecc71; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-right: 5px;">Confirmed</span>
+            <span class="indicator-pill"
+                style="background: #e74c3c; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px; margin-right: 5px;">Occupied</span>
+            <span class="indicator-pill"
+                style="background: #95a5a6; color: white; padding: 2px 8px; border-radius: 10px; font-size: 10px;">Checked
+                Out</span>
+        </div>
+    </div>
+
+    <div id="gantt-container"
+        style="background: white; border: 1px solid #d1d8dd; border-radius: 4px; overflow: hidden; min-height: 50vh;">
+        <!-- Grid will be rendered here -->
+    </div>
+</div>
+
+<style>
+    .bg-light-yellow {
+        background-color: #fff9c4 !important;
+    }
+
+    .calendar-table th,
+    .calendar-table td {
+        border-color: #d1d8dd !important;
+    }
+</style>

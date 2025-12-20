@@ -31,7 +31,7 @@ class Guest(Document):
 		"""Auto-create linked customer in ERPNext"""
 		if not self.customer:
 			# Check if customer already exists with same name
-			customer_name = self.guest_name
+			customer_name = self.guest_name or f"{self.first_name} {self.last_name}".strip()
 			
 			if not frappe.db.exists("Customer", customer_name):
 				try:

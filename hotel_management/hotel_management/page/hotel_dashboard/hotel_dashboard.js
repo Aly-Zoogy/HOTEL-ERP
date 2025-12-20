@@ -1,4 +1,4 @@
-frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
+frappe.pages['hotel-dashboard'].on_page_load = function (wrapper) {
     var page = frappe.ui.make_app_page({
         parent: wrapper,
         title: 'Hotel Dashboard',
@@ -137,6 +137,11 @@ frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
                         </a>
                     </div>
                     <div class="col-sm-3">
+                        <a href="/app/Hotel Calendar" class="btn btn-primary btn-block" style="margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <i class="octicon octicon-calendar"></i> Hotel Calendar
+                        </a>
+                    </div>
+                    <div class="col-sm-3">
                         <a href="/app/guest" class="btn btn-default btn-block" style="margin-bottom: 10px;">
                             <i class="octicon octicon-people"></i> الضيوف
                         </a>
@@ -166,10 +171,10 @@ frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
     // Load dashboard data
     function loadDashboardData() {
         console.log('🚀 Loading dashboard data...');
-        
+
         frappe.call({
             method: 'hotel_management.hotel_management.dashboard_api.get_dashboard_data',
-            callback: function(r) {
+            callback: function (r) {
                 if (r.message) {
                     console.log('✅ Data received:', r.message);
                     updateWidgets(r.message);
@@ -183,13 +188,13 @@ frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
     function updateWidgets(data) {
         // Available Units
         $('[data-widget="available_units"] .widget-value').text(data.available_units.value);
-        
+
         // Today's Arrivals
         $('[data-widget="todays_arrivals"] .widget-value').text(data.todays_arrivals.value);
-        
+
         // Today's Departures
         $('[data-widget="todays_departures"] .widget-value').text(data.todays_departures.value);
-        
+
         // Current Occupancy
         var occ = data.current_occupancy;
         $('[data-widget="current_occupancy"] .widget-value').text(occ.percentage);
@@ -197,56 +202,56 @@ frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
         $('[data-widget="current_occupancy"] .occupancy-details').text(
             occ.value + ' / ' + occ.total + ' وحدات مشغولة'
         );
-        
+
         // Pending Tasks
         var tasks = data.pending_tasks;
-        var taskValue = tasks.overdue > 0 
+        var taskValue = tasks.overdue > 0
             ? tasks.value + ' <span style="color: #e74c3c; font-size: 0.7em;">(' + tasks.overdue + ' متأخر)</span>'
             : tasks.value;
         $('[data-widget="pending_tasks"] .widget-value').html(taskValue);
-        
+
         // In House Guests
         $('[data-widget="in_house_guests"] .widget-value').text(data.in_house_guests.value);
-        
+
         // Pending Settlements
         $('[data-widget="pending_settlements"] .widget-value').text(data.pending_settlements.value);
-        
+
         // Revenue This Month
         $('[data-widget="revenue_this_month"] .widget-value').text(data.revenue_this_month.formatted);
-        
+
         console.log('✅ Widgets updated');
     }
 
     function setupClickHandlers() {
-        $('[data-widget="available_units"]').click(function() {
-            frappe.set_route('List', 'Property Unit', {'status': 'Available'});
+        $('[data-widget="available_units"]').click(function () {
+            frappe.set_route('List', 'Property Unit', { 'status': 'Available' });
         });
-        
-        $('[data-widget="todays_arrivals"]').click(function() {
+
+        $('[data-widget="todays_arrivals"]').click(function () {
             frappe.set_route('List', 'Reservation', {
                 'check_in': frappe.datetime.get_today(),
                 'status': 'Confirmed'
             });
         });
-        
-        $('[data-widget="todays_departures"]').click(function() {
+
+        $('[data-widget="todays_departures"]').click(function () {
             frappe.set_route('List', 'Reservation', {
                 'check_out': frappe.datetime.get_today(),
                 'status': 'Checked-In'
             });
         });
-        
-        $('[data-widget="pending_tasks"]').click(function() {
+
+        $('[data-widget="pending_tasks"]').click(function () {
             frappe.set_route('List', 'Housekeeping Task', {
                 'status': ['in', ['Pending', 'In Progress']]
             });
         });
-        
-        $('[data-widget="revenue_this_month"]').click(function() {
+
+        $('[data-widget="revenue_this_month"]').click(function () {
             frappe.set_route('query-report', 'Revenue by Unit');
         });
-        
-        $('#refresh-dashboard-btn').click(function() {
+
+        $('#refresh-dashboard-btn').click(function () {
             frappe.show_alert({
                 message: 'جارٍ تحديث البيانات...',
                 indicator: 'blue'
@@ -256,10 +261,10 @@ frappe.pages['hotel-dashboard'].on_page_load = function(wrapper) {
     }
 
     // Initialize
-    setTimeout(function() {
+    setTimeout(function () {
         loadDashboardData();
         setupClickHandlers();
-        
+
         // Auto-refresh every 5 minutes
         setInterval(loadDashboardData, 300000);
     }, 500);

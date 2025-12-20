@@ -121,7 +121,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "\u062a\u0642\u0627\u0631\u064a\u0631",
-   "link_count": 5,
+   "link_count": 6,
    "onboard": 0,
    "type": "Card Break"
   },
@@ -174,9 +174,19 @@
    "link_type": "Page",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Hotel Calendar",
+   "link_count": 0,
+   "link_to": "Hotel Calendar",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2025-12-14 22:55:26.617762",
+ "modified": "2025-12-20 14:59:17.470559",
  "modified_by": "Administrator",
  "module": "Hotel Management",
  "name": "Hotel Management",

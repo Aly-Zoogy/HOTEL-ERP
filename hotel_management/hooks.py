@@ -62,5 +62,8 @@ after_install = "hotel_management.install.after_install"
 # App JS
 # ------
 app_include_js = [
-    "/assets/hotel_management/js/dashboard_widgets.js"
+    # "/assets/hotel_management/js/dashboard_widgets.js"
+	# إضافة الملفات الجديدة
+    # "/assets/hotel_management/js/reservation_enhanced.js",
+    # "/assets/hotel_management/js/property_unit_enhanced.js"
 ]

@@ -194,6 +194,7 @@ class Reservation(Document):
 		# Save invoice
 		invoice.insert(ignore_permissions=True)
 		self.sales_invoice = invoice.name
+		self.db_set('sales_invoice', invoice.name)
 		
 		frappe.msgprint(_("Sales Invoice {0} created").format(invoice.name))
 	

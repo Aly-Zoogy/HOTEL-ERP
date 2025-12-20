@@ -1,0 +1,26 @@
+{
+    "content": "<!-- Hotel Calendar Container -->\n<div class=\"hotel-calendar-wrapper\">\n    <div class=\"calendar-controls\">\n        <div class=\"date-nav\">\n            <button class=\"btn btn-default btn-sm\" id=\"btn-prev\">❮ Previous</button>\n            <span id=\"current-month\" class=\"h4\"></span>\n            <button class=\"btn btn-default btn-sm\" id=\"btn-next\">Next ❯</button>\n            <button class=\"btn btn-primary btn-sm\" id=\"btn-today\">Today</button>\n        </div>\n        <div class=\"view-modes\">\n            <div class=\"btn-group\">\n                <button class=\"btn btn-default btn-sm active\" data-view=\"Day\">Day</button>\n                <button class=\"btn btn-default btn-sm\" data-view=\"Week\">Week</button>\n                <button class=\"btn btn-default btn-sm\" data-view=\"Month\">Month</button>\n            </div>\n        </div>\n    </div>\n    <div id=\"gantt-container\"></div>\n    <div class=\"calendar-legend\">\n        <span class=\"legend-item\"><span class=\"dot booked\"></span> Booked</span>\n        <span class=\"legend-item\"><span class=\"dot occupied\"></span> Occupied</span>\n        <span class=\"legend-item\"><span class=\"dot cleaning\"></span> Cleaning</span>\n        <span class=\"legend-item\"><span class=\"dot blocked\"></span> Blocked</span>\n    </div>\n</div>\n",
+    "creation": "2025-12-20 19:15:00.000000",
+    "docstatus": 0,
+    "doctype": "Page",
+    "idx": 0,
+    "modified": "2025-12-20 19:15:00.000000",
+    "modified_by": "Administrator",
+    "module": "Hotel Management",
+    "name": "hotel-calendar",
+    "owner": "Administrator",
+    "page_name": "hotel-calendar",
+    "roles": [
+        {
+            "role": "Hotel Manager"
+        },
+        {
+            "role": "Front Desk"
+        },
+        {
+            "role": "System Manager"
+        }
+    ],
+    "standard": "Yes",
+    "title": "Hotel Calendar"
+}

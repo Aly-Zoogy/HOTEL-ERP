@@ -1,0 +1,89 @@
+.hotel-calendar-wrapper {
+    padding: 15px;
+    background: #fff;
+    min-height: calc(100vh - 150px);
+}
+
+.calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.date-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#current-month {
+    min-width: 150px;
+    text-align: center;
+    font-weight: 600;
+}
+
+#gantt-container {
+    overflow-x: auto;
+    border: 1px solid #d1d8dd;
+    border-radius: 4px;
+}
+
+/* Gantt Customization */
+.gantt .bar-label {
+    fill: #fff;
+    font-weight: 500;
+}
+
+.gantt .bar-progress {
+    fill: rgba(255, 255, 255, 0.3);
+}
+
+/* Status Colors */
+.bar-wrapper.booked .bar {
+    fill: #3498db; /* Blue */
+}
+
+.bar-wrapper.confirmed .bar {
+    fill: #2ecc71; /* Green */
+}
+
+.bar-wrapper.checked-in .bar {
+    fill: #e74c3c; /* Red */
+    stroke: #c0392b;
+}
+
+.bar-wrapper.checked-out .bar {
+    fill: #95a5a6; /* Grey */
+}
+
+.bar-wrapper.cleaning .bar {
+    fill: #f1c40f; /* Yellow */
+}
+
+/* Legend */
+.calendar-legend {
+    margin-top: 15px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.booked { background: #3498db; }
+.dot.occupied { background: #e74c3c; }
+.dot.cleaning { background: #f1c40f; }
+.dot.blocked { background: #555; }
