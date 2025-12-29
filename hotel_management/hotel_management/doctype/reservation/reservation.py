@@ -12,10 +12,13 @@ class Reservation(Document):
 	def validate(self):
 		"""Validation before save"""
 		self.validate_dates()
+		self.validate_guest_data()
 		self.validate_customer_guest_link()
 		self.calculate_nights()
 		self.validate_units_availability()
+		self.apply_rate_plan()
 		self.calculate_total_amount()
+		self.validate_total_amount()
 	
 	def on_submit(self):
 		"""Called when reservation is confirmed"""
@@ -35,19 +38,70 @@ class Reservation(Document):
 	
 	def validate_dates(self):
 		"""Ensure check-out is after check-in"""
+		if not self.check_in:
+			frappe.throw(_("Check-in date is required"))
+		
+		if not self.check_out:
+			frappe.throw(_("Check-out date is required"))
+		
 		if getdate(self.check_out) <= getdate(self.check_in):
-			frappe.throw(_("Check-out date must be after check-in date"))
+			frappe.throw(
+				_("Check-out date must be after check-in date. Check-in: {0}, Check-out: {1}")
+				.format(self.check_in, self.check_out)
+			)
 		
 		# Validate check-in is not in the past (only for new reservations)
 		if self.is_new() and getdate(self.check_in) < getdate(today()):
-			frappe.throw(_("Check-in date cannot be in the past"))
+			frappe.throw(
+				_("Check-in date cannot be in the past. Today: {0}, Check-in: {1}")
+				.format(today(), self.check_in)
+			)
+		
+		# Validate maximum stay duration (e.g., 90 days)
+		max_nights = frappe.db.get_single_value("Hotel Settings", "max_nights_per_reservation") or 90
+		if self.nights and self.nights > max_nights:
+			frappe.throw(
+				_("Maximum stay duration is {0} nights. Requested: {1} nights")
+				.format(max_nights, self.nights)
+			)
+	
+	def validate_guest_data(self):
+		"""Validate guest information"""
+		if not self.primary_guest:
+			frappe.throw(_("Primary guest is required"))
+		
+		# Validate guest exists and has required information
+		guest = frappe.get_doc("Guest", self.primary_guest)
+		
+		if not guest.first_name:
+			frappe.throw(_("Guest {0} must have a first name").format(self.primary_guest))
+		
+		# Validate contact information
+		if not guest.email and not guest.mobile:
+			frappe.msgprint(
+				_("Warning: Guest {0} has no email or mobile number. This may cause issues with notifications.")
+				.format(guest.full_name),
+				indicator="orange"
+			)
 	
 	def validate_customer_guest_link(self):
 		"""Ensure customer and primary guest are linked"""
+		if not self.customer:
+			frappe.throw(_("Customer is required"))
+		
 		if self.primary_guest and self.customer:
 			guest_customer = frappe.db.get_value("Guest", self.primary_guest, "customer")
+			
 			if guest_customer and guest_customer != self.customer:
-				frappe.msgprint(_("Warning: Primary guest is linked to a different customer"))
+				frappe.msgprint(
+					_("Warning: Primary guest is linked to customer {0}, but reservation is for {1}")
+					.format(guest_customer, self.customer),
+					indicator="orange"
+				)
+			else:
+				# Auto-link guest to customer if not linked
+				if not guest_customer:
+					frappe.db.set_value("Guest", self.primary_guest, "customer", self.customer)
 	
 	def calculate_nights(self):
 		"""Calculate number of nights"""
@@ -91,6 +145,63 @@ class Reservation(Document):
 		""", (unit, self.name, check_in, check_out, check_in, check_out, check_in, check_out))
 		
 		return len(overlapping) == 0
+	
+	def apply_rate_plan(self):
+		"""Apply rate plan to units if specified"""
+		if not self.rate_plan:
+			return
+		
+		# Get rate plan details
+		rate_plan = frappe.get_doc("Rate Plan", self.rate_plan)
+		
+		for unit in self.units_reserved:
+			if not unit.rate_per_night or unit.rate_per_night == 0:
+				# Get unit type
+				unit_type = frappe.db.get_value("Property Unit", unit.unit, "unit_type")
+				
+				# Try to get rate from rate plan
+				rate = self.get_rate_from_plan(rate_plan, unit_type, unit.check_in or self.check_in)
+				
+				if rate:
+					unit.rate_per_night = rate
+				else:
+					# Fallback to unit's default rate
+					default_rate = frappe.db.get_value("Property Unit", unit.unit, "rate_per_night")
+					if default_rate:
+						unit.rate_per_night = default_rate
+	
+	def get_rate_from_plan(self, rate_plan, unit_type, date):
+		"""Get rate from rate plan for specific unit type and date"""
+		try:
+			# Check if rate plan has rates for this unit type
+			for rate_item in rate_plan.get("rates", []):
+				if rate_item.unit_type == unit_type:
+					# Check if date falls within rate plan period
+					if rate_plan.valid_from and rate_plan.valid_to:
+						if getdate(rate_plan.valid_from) <= getdate(date) <= getdate(rate_plan.valid_to):
+							return rate_item.rate
+					elif not rate_plan.valid_from and not rate_plan.valid_to:
+						# No date restriction
+						return rate_item.rate
+			return None
+		except Exception as e:
+			frappe.log_error(f"Error getting rate from plan: {str(e)}", "Rate Plan Error")
+			return None
+	
+	def validate_total_amount(self):
+		"""Validate that total amount is reasonable"""
+		if not self.total_amount or self.total_amount <= 0:
+			frappe.throw(
+				_("Total amount must be greater than zero. Please check unit rates and quantities.")
+			)
+		
+		# Check for unreasonably high amounts (optional safety check)
+		max_amount = frappe.db.get_single_value("Hotel Settings", "max_reservation_amount") or 1000000
+		if self.total_amount > max_amount:
+			frappe.msgprint(
+				_("Warning: Total amount {0} exceeds typical reservation amount. Please verify.").format(self.total_amount),
+				indicator="orange"
+			)
 	
 	def calculate_total_amount(self):
 		"""Calculate total amount from units and services"""
