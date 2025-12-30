@@ -52,7 +52,7 @@ def cleanup_test_data():
     for doctype in test_docs:
         frappe.db.sql(f"""DELETE FROM `tab{doctype}`""")
     
-    frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
     print(f"{Colors.GREEN}✓ Cleanup complete{Colors.END}\n")
 
 # ================================================================================
@@ -71,7 +71,7 @@ def test_property_creation():
             "address": "123 Test Street, Cairo"
         })
         property_doc.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify
         exists = frappe.db.exists("Property", "TEST-Hotel-001")
@@ -94,7 +94,7 @@ def test_unit_type_creation():
             "is_active": 1
         })
         unit_type.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         exists = frappe.db.exists("Unit Type", "TEST-Double-Room")
         print_test("Create Unit Type", exists, "TEST-Double-Room created with rate 500")
@@ -117,7 +117,7 @@ def test_property_unit_creation(property_name, unit_type):
             "rate_per_night": 500
         })
         unit.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify
         exists = frappe.db.exists("Property Unit", "TEST-UNIT-101")
@@ -141,7 +141,7 @@ def test_owner_creation():
             "contact_info": "test@example.com"
         })
         owner.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify supplier auto-creation
         exists = frappe.db.exists("Owner", "TEST-Owner-Ali")
@@ -172,7 +172,7 @@ def test_guest_creation():
             "national_id": "12345678901234"
         })
         guest.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify customer auto-creation
         customer = frappe.db.get_value("Guest", guest.name, "customer")
@@ -212,7 +212,7 @@ def test_reservation_creation(unit_name, guest_name):
         })
         
         reservation.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify calculations
         nights = reservation.nights
@@ -232,7 +232,7 @@ def test_reservation_submit(reservation_name):
     try:
         reservation = frappe.get_doc("Reservation", reservation_name)
         reservation.submit()
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify status changed
         status = frappe.db.get_value("Reservation", reservation_name, "status")
@@ -253,7 +253,7 @@ def test_check_in(reservation_name):
         from hotel_management.hotel_management.doctype.reservation.reservation import check_in_reservation
         
         result = check_in_reservation(reservation_name)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         status = frappe.db.get_value("Reservation", reservation_name, "status")
         unit_status = frappe.db.get_value("Property Unit", "TEST-UNIT-101", "status")
@@ -273,7 +273,7 @@ def test_check_out(reservation_name):
         from hotel_management.hotel_management.doctype.reservation.reservation import check_out_reservation
         
         result = check_out_reservation(reservation_name)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         status = frappe.db.get_value("Reservation", reservation_name, "status")
         invoice = frappe.db.get_value("Reservation", reservation_name, "sales_invoice")
@@ -299,7 +299,7 @@ def test_owner_settlement_calculation(owner_name, unit_name):
     try:
         # Link unit to owner
         frappe.db.set_value("Property Unit", unit_name, "property_owner", owner_name)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Create settlement
         period_start = add_months(today(), -1)
@@ -315,7 +315,7 @@ def test_owner_settlement_calculation(owner_name, unit_name):
             "commission_rate": 15
         })
         settlement.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify auto-calculation
         revenue = settlement.total_revenue
@@ -363,7 +363,7 @@ def test_settlement_methods(owner_name):
             "commission_rate": 15
         })
         settlement_b.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify different results
         net_a = settlement_a.net_payable
@@ -396,12 +396,12 @@ def test_housekeeping_task(unit_name):
             "status": "Pending"
         })
         task.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Mark as completed
         task.status = "Completed"
         task.save()
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify unit status updated
         unit_status = frappe.db.get_value("Property Unit", unit_name, "status")
@@ -430,7 +430,7 @@ def test_maintenance_request(unit_name):
             "status": "Open"
         })
         request.insert(ignore_permissions=True)
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify unit status changed to Maintenance
         unit_status = frappe.db.get_value("Property Unit", unit_name, "status")
@@ -439,7 +439,7 @@ def test_maintenance_request(unit_name):
         request.status = "Resolved"
         request.resolution_notes = "Fixed"
         request.save()
-        frappe.db.commit()
+# frappe.db.commit() # Removed for v15 migration
         
         # Verify unit status back to Available
         unit_status_after = frappe.db.get_value("Property Unit", unit_name, "status")

@@ -35,7 +35,6 @@ yarn-error.log
 # Migration artifacts (temporary)
 migration_stats_before.txt
 migration_analysis.md
-TESTING_CHECKLIST.md
 migration_status.txt
 
 # Backup files
