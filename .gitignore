@@ -1,11 +1,49 @@
+# Python
 *.pyc
 __pycache__/
-.DS_Store
-*.swp
-*.log
-node_modules/
-.vscode/
-.idea/
 *.egg-info/
 dist/
 build/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Logs
+*.log
+
+# Migration artifacts (temporary)
+migration_stats_before.txt
+migration_analysis.md
+TESTING_CHECKLIST.md
+migration_status.txt
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Database
+*.db
+*.sqlite
+*.sqlite3

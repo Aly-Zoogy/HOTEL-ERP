@@ -1,0 +1,35 @@
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "hotel_management"
+version = "15.0.0"
+description = "Complete Hotel Management ERP System integrated with ERPNext v15"
+authors = [
+    { name = "Aly Zoogy", email = "alyerpnext@gmail.com" }
+]
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+dependencies = [
+    "frappe>=15.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/VRPnext/hotel-management-v15"
+Repository = "https://github.com/VRPnext/hotel-management-v15.git"
+Documentation = "https://github.com/VRPnext/hotel-management-v15#readme"
+"Bug Tracker" = "https://github.com/VRPnext/hotel-management-v15/issues"
+
+[tool.bench.dev-dependencies]
+# Development dependencies
+# Add any dev-only packages here
+
+[project.optional-dependencies]
+dev = [
+    # Development tools
+]
+test = [
+    # Testing tools
+]
