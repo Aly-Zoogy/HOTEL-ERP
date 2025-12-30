@@ -1,4 +1,5 @@
 # 🏨 Hotel Management System
+> **v15 Ready** 🚀
 
 نظام إدارة فندقية متكامل مبني على Frappe Framework ومتكامل مع ERPNext
 
@@ -70,8 +71,8 @@ hotel_management/
 ## 🚀 التثبيت
 
 ### المتطلبات
-- Frappe Framework (v14 أو أحدث)
-- ERPNext (اختياري للتكامل المحاسبي)
+- Frappe Framework (v15.0+ مطلوب)
+- ERPNext (v15.0+ مطلوب)
 - Python 3.10+
 - MariaDB 10.6+
 
