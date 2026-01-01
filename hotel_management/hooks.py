@@ -1,12 +1,15 @@
+from . import __version__ as app_version
+
 app_name = "hotel_management"
 app_title = "Hotel Management"
 app_publisher = "VRPnext"
-app_description = "Complete ERP for Hotels integrated with ERPNext"
+app_description = "Complete ERP for Hotels integrated with ERPNext v15"
 app_email = "support@vrpnext.com"
 app_license = "MIT"
-app_version = "1.0.0"
 
-required_apps = ["erpnext"]
+# ✅ REQUIRED for Frappe v15
+required_apps = ["frappe>=15.0.0", "erpnext>=15.0.0"]
+
 
 # Fixtures - Export custom fields with the app
 fixtures = [

@@ -9,11 +9,12 @@ from hotel_management import __version__ as version
 setup(
 	name="hotel_management",
 	version=version,
-	description="Hotel Management ERP System integrated with ERPNext",
+	description="Complete Hotel Management ERP System for Frappe v15",
 	author="Aly Zoogy",
 	author_email="alyerpnext@gmail.com",
 	packages=find_packages(),
 	zip_safe=False,
 	include_package_data=True,
-	install_requires=install_requires
+	install_requires=install_requires,
+	python_requires=">=3.10",
 )
